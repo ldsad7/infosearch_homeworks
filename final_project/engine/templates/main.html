@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Search Engine</title>
+
+    <style>
+        body {
+            font-family: Bodoni MT, serif;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .search {
+            display: inline-block;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        input, select {
+            border: 1px solid gray;
+            border-radius: 4px;
+            font-size: 18px;
+            height: 10%;
+            outline: none;
+        }
+
+        input {
+            padding: 10px;
+            margin: 10px;
+            width: 45%;
+        }
+
+        input:hover, input:focus {
+            border-color: lightblue;
+        }
+
+        input[type="text"] {
+            padding-right: 5px;
+            margin-right: 5px;
+        }
+
+        input[type="submit"] {
+            background: lightblue;
+            border: 1px solid gray;
+            color: gray;
+            font-weight: bold;
+            width: 120px;
+            padding-left: 5px;
+            margin-left: 5px;
+        }
+
+        input[type="submit"]:hover {
+            box-shadow: 4px 4px 5px rgba(0,0,0,0.1);
+            background-color: white;
+            color: black;
+        }
+
+        select {
+            width: 120px;
+            padding: 10px 5px;
+            margin: 10px 5px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background: url(https://wildandbrave.com/wp-content/uploads/bb-plugin/cache/Feature-Question-Small-landscape.png);
+            background-repeat: no-repeat;
+            background-position: right;
+            background-color: #ddd;
+            background-size: 35%;
+        }
+
+        select::-ms-expand {
+            display: none;
+        }
+
+        @media screen and (min-width:0\0) {
+            select {
+                background: none\9;
+                padding: 5px\9;
+            }
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        td {
+            padding: 5px;
+            padding-right: 10px;
+            border-top: 1px solid black;
+        }
+
+        th {
+            padding: 10px;
+        }
+
+        caption {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .row_1 {
+            background-color: lightblue;
+        }
+
+        .row_2 {
+            background-color: #ddd;
+        }
+
+        .row_2:hover, .row_1:hover {
+            background-color: #eee;
+        }
+
+        .col_1 {
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="search">
+        <form method="get" action="">
+            <input type="text" name="query" id="query" autocomplete="off"/>
+            <select name="engine" id="select">
+                <option id="tf-idf" value="tf-idf">tf-idf</option>
+                <option id="bm25" value="bm25">bm25</option>
+                <option id="fasttext" value="fasttext">fasttext</option>
+                <option id="elmo" value="elmo">elmo</option>
+                <option id="bert" value="bert">bert</option>
+            </select>
+            <input type="submit" value="Search"/>
+        </form>
+    </div>
+
+    {% if docs %}
+        <div>
+            <table>
+                <caption>Results</caption>
+                <tr>
+                    <th class="col_1" style="width: 10%;">Rank</th>
+                    <th style="width: 70%;">Text</th>
+                    <th style="width: 20%;">{{ engine|title }} value</th>
+                </tr>
+                {% for pair in docs %}
+                    <tr class="row_{{ forloop.counter0|divisibleby:2|yesno:'1,2' }}">
+                        <td class="col_1">{{ forloop.counter0|add:1 }}</td>
+                        <td>{{ pair.0 }}</td>
+                        <td>{{ pair.1 }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endif %}
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script>
+        document.getElementById("select").onchange = function() {
+            localStorage.setItem('engine', document.getElementById("select").value);
+        };
+
+        document.getElementById("query").onchange = function() {
+            localStorage.setItem('query', document.getElementById("query").value);
+        };
+
+        if (localStorage.getItem('engine')) {
+            document.getElementById("select").options[localStorage.getItem('engine')].selected = true;
+        }
+
+        if (localStorage.getItem('query')) {
+            document.getElementById("query").value = localStorage.getItem('query');
+        }
+    </script>
+</body>
+</html>
